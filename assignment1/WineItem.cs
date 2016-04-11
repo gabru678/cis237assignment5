@@ -1,7 +1,4 @@
-﻿//Author: David Barnes
-//CIS 237
-//Assignment 1
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -41,7 +38,5 @@ namespace assignment1
         {
             return "Id: " + id + ", Description: " + description + ", Pack: " + pack;
         }
-
-
     }
 }

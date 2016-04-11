@@ -9,25 +9,103 @@ using System.Threading.Tasks;
 
 namespace assignment1
 {
+
+    // He wasnts us to add a few methods here so that we can use and call them
+
     class WineItemCollection : IWineCollection
     {
+        
         //Private Variables
         WineItem[] wineItems;
         int wineItemsLength;
 
-        //Constuctor. Must pass the size of the collection.
-        public WineItemCollection(int size)
+        // They need to have their own DataBases and User Interface to call
+        BeveragePBathEntities db = new BeveragePBathEntities();
+        UserInterface ui = new UserInterface();
+
+        // Going to do delete first because its easy
+        // Hopefully.
+        public void Delete(string id)
         {
-            wineItems = new WineItem[size];
-            wineItemsLength = 0;
+            try
+            {
+                //Find that ID sent in and asign to the Delete possibility
+                Beverage toDelete = db.Beverages.Find(id);
+
+                // now delete
+                db.Beverages.Remove(toDelete);
+                //Dont forget to save!
+                db.SaveChanges();
+
+                ui.DisplayDeleteSuccess();
+            }
+
+            catch (Exception e)
+            {
+                ui.DisplayDeleteError();
+            }
         }
 
-        //Add a new item to the collection
-        public void AddNewItem(string id, string description, string pack)
+        // Now do the UPDATE!!!!!!!
+        public void Update(string id, string name, string pack, decimal price)
         {
-            //Add a new WineItem to the collection. Increase the Length variable.
-            wineItems[wineItemsLength] = new WineItem(id, description, pack);
-            wineItemsLength++;
+            Beverage toUpdate = db.Beverages.Find(id);
+
+            try
+            {
+                //Guess we should find it first
+                FindById(id);
+
+                //add info
+                toUpdate.name = name;
+                toUpdate.pack = pack;
+                toUpdate.price = price;
+
+                //Save info
+                db.SaveChanges();
+                ui.DisplayAddWineItemSuccess();
+            }
+
+            catch(Exception e)
+            {
+                ui.DisplayAddWineItemError();
+            }
+        }
+
+        ////Constuctor. Must pass the size of the collection.
+        //public WineItemCollection(int size)
+        //{
+        //    wineItems = new WineItem[size];
+        //    wineItemsLength = 0;
+        //}
+
+        //Add a new item to the collection
+        public void AddNewItem(string id, string name, string pack, decimal price)
+        {
+            Beverage toAdd = db.Beverages.Find(id);
+
+            //Guess we should find it first
+            FindById(id);
+
+            //add info
+            toAdd.id = id;
+            toAdd.name = name;
+            toAdd.pack = pack;
+            toAdd.price = price;
+
+            try
+            {
+
+                db.Beverages.Add(toAdd);
+                //Save info
+                db.SaveChanges();
+                ui.DisplayAddWineItemSuccess();
+            }
+
+            catch (Exception e)
+            {
+                ui.DisplayAddWineItemError();
+            }
         }
         
         //Get The Print String Array For All Items
@@ -80,6 +158,6 @@ namespace assignment1
             //Return the returnString
             return returnString;
         }
-
+        
     }
 }

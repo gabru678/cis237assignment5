@@ -1,6 +1,6 @@
-﻿//Author: David Barnes
+﻿//Author: Paul Bath
 //CIS 237
-//Assignment 1
+//Assignment 5
 /*
  * The Menu Choices Displayed By The UI
  * 1. Load Wine List From CSV
@@ -22,19 +22,19 @@ namespace assignment1
         static void Main(string[] args)
         {
             //Set a constant for the size of the collection
-            const int wineItemCollectionSize = 4000;
+            //const int wineItemCollectionSize = 4000;
 
-            //Set a constant for the path to the CSV File
-            const string pathToCSVFile = "../../../datafiles/winelist.csv";
+            //Create an Instance of the Database
+            BeveragePBathEntities beveregeEntity = new BeveragePBathEntities();
 
             //Create an instance of the UserInterface class
             UserInterface userInterface = new UserInterface();
 
             //Create an instance of the WineItemCollection class
-            IWineCollection wineItemCollection = new WineItemCollection(wineItemCollectionSize);
+            IWineCollection wineItemCollection = new WineItemCollection();
 
             //Create an instance of the CSVProcessor class
-            CSVProcessor csvProcessor = new CSVProcessor();
+            //CSVProcessor csvProcessor = new CSVProcessor();
 
             //Display the Welcome Message to the user
             userInterface.DisplayWelcomeGreeting();
@@ -43,42 +43,24 @@ namespace assignment1
             //This is the 'primer' run of displaying and getting.
             int choice = userInterface.DisplayMenuAndGetResponse();
 
-            while (choice != 5)
+            while (choice != 6)
             {
                 switch (choice)
                 {
                     case 1:
-                        //Load the CSV File
-                        bool success = csvProcessor.ImportCSV(wineItemCollection, pathToCSVFile);
-                        if (success)
+                        // Print All
+                        foreach (Beverage bev in beveregeEntity.Beverages)
                         {
-                            //Display Success Message
-                            userInterface.DisplayImportSuccess();
+                            Console.WriteLine("Printing all in the Database! \n");
+                            Console.WriteLine("The ID is: " + bev.id);
+                            Console.WriteLine("The Name is: " + bev.name);
+                            Console.WriteLine("The Pack is: " + bev.pack);
+                            Console.WriteLine("The Price is: " + bev.price);
                         }
-                        else
-                        {
-                            //Display Fail Message
-                            userInterface.DisplayImportError();
-                        }
-                        break;
+                            break;
 
                     case 2:
-                        //Print Entire List Of Items
-                        string[] allItems = wineItemCollection.GetPrintStringsForAllItems();
-                        if (allItems.Length > 0)
-                        {
-                            //Display all of the items
-                            userInterface.DisplayAllItems(allItems);
-                        }
-                        else
-                        {
-                            //Display error message for all items
-                            userInterface.DisplayAllItemsError();
-                        }
-                        break;
-
-                    case 3:
-                        //Search For An Item
+                        //Search for a specific ID
                         string searchQuery = userInterface.GetSearchQuery();
                         string itemInformation = wineItemCollection.FindById(searchQuery);
                         if (itemInformation != null)
@@ -89,20 +71,53 @@ namespace assignment1
                         {
                             userInterface.DisplayItemFoundError();
                         }
+
                         break;
 
-                    case 4:
+                    case 3:
                         //Add A New Item To The List
                         string[] newItemInformation = userInterface.GetNewItemInformation();
                         if (wineItemCollection.FindById(newItemInformation[0]) == null)
                         {
-                            wineItemCollection.AddNewItem(newItemInformation[0], newItemInformation[1], newItemInformation[2]);
+                            wineItemCollection.AddNewItem(newItemInformation[0], newItemInformation[1], newItemInformation[2],Convert.ToDecimal(newItemInformation[3]));
                             userInterface.DisplayAddWineItemSuccess();
                         }
                         else
                         {
                             userInterface.DisplayItemAlreadyExistsError();
                         }
+                        break;
+
+                    case 4:
+                        // Modify Item
+                        string[] modifyItem = userInterface.GetInfoToUpdate();
+
+                        if (wineItemCollection.FindById(modifyItem[0]).Equals(true))
+                        {
+                           wineItemCollection.Update(modifyItem[0], modifyItem[1], modifyItem[2], Convert.ToDecimal(modifyItem[3]));
+                        }
+
+                        else
+                        {
+                            userInterface.DisplayItemFoundError();
+                        }
+
+                        break;
+
+                    case 5:
+                        //Delete a Wine item by ID
+                        string deleteItem = userInterface.GetIDToDelete();
+
+                        if (wineItemCollection.FindById(deleteItem).Equals(true))
+                        {
+                            wineItemCollection.Delete(deleteItem);
+                        }
+
+                        else
+                        {
+                            userInterface.DisplayItemFoundError();
+                        }
+
                         break;
                 }
 
