@@ -2,7 +2,7 @@
 
 ## Due 4-11-2016
 
-## Author
+## Author Paul Bath
 
 ## Description
 
@@ -58,10 +58,14 @@ Solution Requirements:
 * UI Class to handle I/O
 
 ### Notes
-
+I wish this was due on Wednesday as I still had some questions I wasnt able to ask in person
+might be due to me missing the class that one day however
 
 ## Outside Resources Used
 
+Same Internet sources ( stack / MDSN)
+
 ## Known Problems, Issues, And/Or Errors in the Program
 
-
+I dont think I have any, though once I ran before I had a unhandled exception, but I made some changes and it went away
+Dont know if it will be back.
